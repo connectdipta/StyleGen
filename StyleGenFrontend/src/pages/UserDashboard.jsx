@@ -1,12 +1,152 @@
 import { useState, useEffect } from 'react';
 import html2pdf from 'html2pdf.js';
 import { useLocation } from 'react-router-dom';
-import { ShoppingBag, User, MapPin, Package, Bell, Settings, LogOut, Heart, Clock, CheckCircle, ChevronRight, FileText, CreditCard, Star, ShoppingCart, Trash2, Plus, Minus } from 'lucide-react';
+import { ShoppingBag, User, MapPin, Package, Bell, LogOut, Heart, Clock, CheckCircle, ChevronRight, FileText, CreditCard, Star, ShoppingCart, Trash2, Plus, Minus } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { getImageUrl } from '../utils/imageUtils';
 import { API_URL } from '../api/api';
 import api from '../api/api';
+
+const ProfessionalInvoice = ({ order, onClose, user, API_URL }) => {
+    if (!order) return null;
+    const subtotal = order.orderItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+    const shipping = 100;
+
+    const handleDownloadPDF = () => {
+        const element = document.getElementById('printable-invoice');
+        const opt = {
+            margin: 0.5,
+            filename: `StyleGen_Invoice_${order._id.slice(-6).toUpperCase()}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, logging: false },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
+    };
+
+    return (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }} onClick={onClose}>
+            <style>
+                {`
+                    @media print {
+                        aside, nav, header, footer, .no-print { 
+                            display: none !important; 
+                        }
+                        body, html { 
+                            background: #FFF !important; 
+                            margin: 0 !important; 
+                            padding: 0 !important; 
+                        }
+                        div[style*="position: fixed"] { 
+                            position: static !important; 
+                            background: none !important; 
+                            padding: 0 !important; 
+                            display: block !important;
+                        }
+                        div[style*="max-width: 800px"] { 
+                            max-width: 100% !important; 
+                            border: none !important; 
+                            boxShadow: none !important;
+                            margin: 0 !important;
+                        }
+                        #printable-invoice { 
+                            padding: 0 !important; 
+                            max-height: none !important; 
+                            overflow: visible !important;
+                            display: block !important;
+                        }
+                    }
+                `}
+            </style>
+            <div style={{ background: '#FFF', width: '100%', maxWidth: '800px', borderRadius: '16px', overflow: 'hidden', position: 'relative', margin: '1rem' }} onClick={e => e.stopPropagation()}>
+                <div className="no-print" style={{ background: '#FBFBFC', padding: '1.5rem 3rem', borderBottom: '1px solid #EEE', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h3 style={{ fontWeight: '950', fontSize: '1.1rem' }}>Invoice Details</h3>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                        <button onClick={handleDownloadPDF} style={{ padding: '8px 20px', background: '#111', color: '#FFF', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: '800', cursor: 'pointer' }}>Download PDF</button>
+                        <button onClick={onClose} style={{ padding: '8px 20px', background: '#EEE', color: '#666', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: '800', cursor: 'pointer' }}>Close</button>
+                    </div>
+                </div>
+
+                <div style={{ padding: '2rem', maxHeight: '80vh', overflowY: 'auto' }} id="printable-invoice">
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4rem' }}>
+                        <div>
+                            <h1 style={{ fontSize: '2.5rem', fontWeight: '950', letterSpacing: '-2px', marginBottom: '5px' }}>StyleGen</h1>
+                            <p style={{ fontSize: '12px', color: '#FF4D1C', fontWeight: '900', letterSpacing: '2px' }}>ARTISAN LEATHER GOODS</p>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                            <h2 style={{ fontSize: '2rem', fontWeight: '950', color: '#EEE', marginBottom: '10px' }}>INVOICE</h2>
+                            <p style={{ fontWeight: '800', fontSize: '14px' }}>#INV-{order._id.slice(-6).toUpperCase()}</p>
+                            <p style={{ color: '#999', fontSize: '13px' }}>{new Date(order.createdAt).toLocaleDateString()}</p>
+                        </div>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', marginBottom: '4rem' }}>
+                        <div>
+                            <h4 style={{ fontSize: '11px', fontWeight: '900', color: '#999', marginBottom: '1.5rem', letterSpacing: '1px' }}>BILLED TO</h4>
+                            <p style={{ fontWeight: '950', fontSize: '1.1rem', marginBottom: '5px' }}>{user?.name}</p>
+                            <p style={{ color: '#666', fontSize: '13px', lineHeight: '1.6' }}>{user?.email}</p>
+                            <p style={{ color: '#666', fontSize: '13px', lineHeight: '1.6' }}>{order.shippingAddress?.phone}</p>
+                        </div>
+                        <div>
+                            <h4 style={{ fontSize: '11px', fontWeight: '900', color: '#999', marginBottom: '1.5rem', letterSpacing: '1px' }}>SHIPPING ADDRESS</h4>
+                            <p style={{ color: '#666', fontSize: '13px', lineHeight: '1.6' }}>{order.shippingAddress?.address}</p>
+                            <p style={{ color: '#666', fontSize: '13px', lineHeight: '1.6' }}>{order.shippingAddress?.city}, {order.shippingAddress?.country}</p>
+                            <p style={{ color: '#666', fontSize: '13px', lineHeight: '1.6' }}>Postal Code: {order.shippingAddress?.postalCode}</p>
+                        </div>
+                    </div>
+
+                    <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '4rem' }}>
+                        <thead>
+                            <tr style={{ borderBottom: '2px solid #111' }}>
+                                <th style={{ padding: '15px 0', textAlign: 'left', fontSize: '12px', fontWeight: '900' }}>PRODUCT</th>
+                                <th style={{ padding: '15px 0', textAlign: 'center', fontSize: '12px', fontWeight: '900' }}>QTY</th>
+                                <th style={{ padding: '15px 0', textAlign: 'right', fontSize: '12px', fontWeight: '900' }}>UNIT PRICE</th>
+                                <th style={{ padding: '15px 0', textAlign: 'right', fontSize: '12px', fontWeight: '900' }}>TOTAL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {order.orderItems.map((item, i) => (
+                                <tr key={i} style={{ borderBottom: '1px solid #EEE' }}>
+                                    <td style={{ padding: '20px 0' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                            <img src={getImageUrl(item.image, API_URL)} style={{ width: '40px', height: '40px', objectFit: 'contain' }} alt="" />
+                                            <span style={{ fontWeight: '800', fontSize: '14px' }}>{item.name}</span>
+                                        </div>
+                                    </td>
+                                    <td style={{ textAlign: 'center', fontWeight: '800' }}>{item.quantity}</td>
+                                    <td style={{ textAlign: 'right', fontWeight: '800' }}>BDT {item.price}</td>
+                                    <td style={{ textAlign: 'right', fontWeight: '950' }}>BDT {item.price * item.quantity}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
+                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <div style={{ width: '250px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
+                                <span style={{ color: '#999', fontWeight: '700', fontSize: '13px' }}>Subtotal</span>
+                                <span style={{ fontWeight: '900' }}>BDT {subtotal}</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
+                                <span style={{ color: '#999', fontWeight: '700', fontSize: '13px' }}>Shipping</span>
+                                <span style={{ fontWeight: '900' }}>BDT {shipping}</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px', paddingTop: '20px', borderTop: '2px solid #111' }}>
+                                <span style={{ fontWeight: '950', fontSize: '1.1rem' }}>Grand Total</span>
+                                <span style={{ fontWeight: '950', fontSize: '1.4rem', color: '#FF4D1C' }}>BDT {order.totalPrice}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style={{ marginTop: '5rem', textAlign: 'center', borderTop: '1px solid #EEE', paddingTop: '3rem' }}>
+                        <p style={{ fontSize: '12px', color: '#999', fontWeight: '700', letterSpacing: '1px' }}>THANK YOU FOR SUPPORTING LOCAL ARTISANS</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 const UserDashboard = () => {
     const { user, logout, updateProfile } = useAuth();
@@ -20,160 +160,6 @@ const UserDashboard = () => {
     const [notifications, setNotifications] = useState([]);
     const [showNotifications, setShowNotifications] = useState(false);
 
-    const ProfessionalInvoice = ({ order, onClose }) => {
-        if (!order) return null;
-        const subtotal = order.orderItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-        const shipping = 100;
-
-        const handleDownloadPDF = () => {
-            const element = document.getElementById('printable-invoice');
-            const opt = {
-                margin: 0.5,
-                filename: `StyleGen_Invoice_${order._id.slice(-6).toUpperCase()}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, logging: false },
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
-            html2pdf().set(opt).from(element).save();
-        };
-
-        return (
-            <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }} onClick={onClose}>
-                <style>
-                    {`
-                        @media print {
-                            /* Hide all dashboard elements */
-                            aside, nav, header, footer, .no-print { 
-                                display: none !important; 
-                            }
-                            
-                            /* Reset layout for print */
-                            body, html { 
-                                background: #FFF !important; 
-                                margin: 0 !important; 
-                                padding: 0 !important; 
-                            }
-                            
-                            /* Target the modal container and reset it */
-                            div[style*="position: fixed"] { 
-                                position: static !important; 
-                                background: none !important; 
-                                padding: 0 !important; 
-                                display: block !important;
-                            }
-                            
-                            /* Target the invoice card and reset it */
-                            div[style*="max-width: 800px"] { 
-                                max-width: 100% !important; 
-                                border: none !important; 
-                                boxShadow: none !important;
-                                margin: 0 !important;
-                            }
-                            
-                            /* Ensure the printable area is visible */
-                            #printable-invoice { 
-                                padding: 0 !important; 
-                                max-height: none !important; 
-                                overflow: visible !important;
-                                display: block !important;
-                            }
-                        }
-                    `}
-                </style>
-                <div style={{ background: '#FFF', width: '100%', maxWidth: '800px', borderRadius: '16px', overflow: 'hidden', position: 'relative', margin: '1rem' }} onClick={e => e.stopPropagation()}>
-                    {/* Header Controls */}
-                    <div className="no-print" style={{ background: '#FBFBFC', padding: '1.5rem 3rem', borderBottom: '1px solid #EEE', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <h3 style={{ fontWeight: '950', fontSize: '1.1rem' }}>Invoice Details</h3>
-                        <div style={{ display: 'flex', gap: '1rem' }}>
-                            <button onClick={handleDownloadPDF} style={{ padding: '8px 20px', background: '#111', color: '#FFF', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: '800', cursor: 'pointer' }}>Download PDF</button>
-                            <button onClick={onClose} style={{ padding: '8px 20px', background: '#EEE', color: '#666', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: '800', cursor: 'pointer' }}>Close</button>
-                        </div>
-                    </div>
-
-                    <div style={{ padding: '2rem', maxHeight: '80vh', overflowY: 'auto' }} id="printable-invoice">
-                        {/* Brand Section */}
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4rem' }}>
-                            <div>
-                                <h1 style={{ fontSize: '2.5rem', fontWeight: '950', letterSpacing: '-2px', marginBottom: '5px' }}>StyleGen</h1>
-                                <p style={{ fontSize: '12px', color: '#FF4D1C', fontWeight: '900', letterSpacing: '2px' }}>ARTISAN LEATHER GOODS</p>
-                            </div>
-                            <div style={{ textAlign: 'right' }}>
-                                <h2 style={{ fontSize: '2rem', fontWeight: '950', color: '#EEE', marginBottom: '10px' }}>INVOICE</h2>
-                                <p style={{ fontWeight: '800', fontSize: '14px' }}>#INV-{order._id.slice(-6).toUpperCase()}</p>
-                                <p style={{ color: '#999', fontSize: '13px' }}>{new Date(order.createdAt).toLocaleDateString()}</p>
-                            </div>
-                        </div>
-
-                        {/* Info Grid */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', marginBottom: '4rem' }}>
-                            <div>
-                                <h4 style={{ fontSize: '11px', fontWeight: '900', color: '#999', marginBottom: '1.5rem', letterSpacing: '1px' }}>BILLED TO</h4>
-                                <p style={{ fontWeight: '950', fontSize: '1.1rem', marginBottom: '5px' }}>{user?.name}</p>
-                                <p style={{ color: '#666', fontSize: '13px', lineHeight: '1.6' }}>{user?.email}</p>
-                                <p style={{ color: '#666', fontSize: '13px', lineHeight: '1.6' }}>{order.shippingAddress?.phone}</p>
-                            </div>
-                            <div>
-                                <h4 style={{ fontSize: '11px', fontWeight: '900', color: '#999', marginBottom: '1.5rem', letterSpacing: '1px' }}>SHIPPING ADDRESS</h4>
-                                <p style={{ color: '#666', fontSize: '13px', lineHeight: '1.6' }}>{order.shippingAddress?.address}</p>
-                                <p style={{ color: '#666', fontSize: '13px', lineHeight: '1.6' }}>{order.shippingAddress?.city}, {order.shippingAddress?.country}</p>
-                                <p style={{ color: '#666', fontSize: '13px', lineHeight: '1.6' }}>Postal Code: {order.shippingAddress?.postalCode}</p>
-                            </div>
-                        </div>
-
-                        {/* Items Table */}
-                        <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '4rem' }}>
-                            <thead>
-                                <tr style={{ borderBottom: '2px solid #111' }}>
-                                    <th style={{ padding: '15px 0', textAlign: 'left', fontSize: '12px', fontWeight: '900' }}>PRODUCT</th>
-                                    <th style={{ padding: '15px 0', textAlign: 'center', fontSize: '12px', fontWeight: '900' }}>QTY</th>
-                                    <th style={{ padding: '15px 0', textAlign: 'right', fontSize: '12px', fontWeight: '900' }}>UNIT PRICE</th>
-                                    <th style={{ padding: '15px 0', textAlign: 'right', fontSize: '12px', fontWeight: '900' }}>TOTAL</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {order.orderItems.map((item, i) => (
-                                    <tr key={i} style={{ borderBottom: '1px solid #EEE' }}>
-                                        <td style={{ padding: '20px 0' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                                <img src={getImageUrl(item.image, API_URL)} style={{ width: '40px', height: '40px', objectFit: 'contain' }} alt="" />
-                                                <span style={{ fontWeight: '800', fontSize: '14px' }}>{item.name}</span>
-                                            </div>
-                                        </td>
-                                        <td style={{ textAlign: 'center', fontWeight: '800' }}>{item.quantity}</td>
-                                        <td style={{ textAlign: 'right', fontWeight: '800' }}>BDT {item.price}</td>
-                                        <td style={{ textAlign: 'right', fontWeight: '950' }}>BDT {item.price * item.quantity}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-
-                        {/* Summary Section */}
-                        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            <div style={{ width: '250px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
-                                    <span style={{ color: '#999', fontWeight: '700', fontSize: '13px' }}>Subtotal</span>
-                                    <span style={{ fontWeight: '900' }}>BDT {subtotal}</span>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
-                                    <span style={{ color: '#999', fontWeight: '700', fontSize: '13px' }}>Shipping</span>
-                                    <span style={{ fontWeight: '900' }}>BDT {shipping}</span>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px', paddingTop: '20px', borderTop: '2px solid #111' }}>
-                                    <span style={{ fontWeight: '950', fontSize: '1.1rem' }}>Grand Total</span>
-                                    <span style={{ fontWeight: '950', fontSize: '1.4rem', color: '#FF4D1C' }}>BDT {order.totalPrice}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Footer */}
-                        <div style={{ marginTop: '5rem', textAlign: 'center', borderTop: '1px solid #EEE', paddingTop: '3rem' }}>
-                            <p style={{ fontSize: '12px', color: '#999', fontWeight: '700', letterSpacing: '1px' }}>THANK YOU FOR SUPPORTING LOCAL ARTISANS</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    };
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -203,7 +189,7 @@ const UserDashboard = () => {
 
     const handleUpdateProfile = async (e) => {
         e.preventDefault();
-        const res = await updateProfile(profile);
+        await updateProfile(profile);
     };
 
     const handleMarkAllRead = () => {
@@ -217,10 +203,10 @@ const UserDashboard = () => {
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const tab = params.get('tab');
-        if (tab) {
+        if (tab && tab !== activeTab) {
             setActiveTab(tab);
         }
-    }, [location.search]);
+    }, [location.search, activeTab]);
 
     const sidebarItems = [
         { id: 'back-to-shop', name: 'Back to Shop', icon: <ChevronRight size={18} />, action: 'navigate' },
@@ -235,9 +221,16 @@ const UserDashboard = () => {
 
     return (
         <div className="dashboard-container" style={{ display: 'flex', minHeight: '100vh', background: '#FBFBFC' }}>
-            {showInvoice && <ProfessionalInvoice order={selectedOrder} onClose={() => setShowInvoice(false)} />}
+            {showInvoice && <ProfessionalInvoice order={selectedOrder} onClose={() => setShowInvoice(false)} user={user} API_URL={API_URL} />}
             {/* SIDEBAR */}
-            <aside className="dashboard-sidebar" style={{ width: '280px', background: '#FFF', padding: '2.5rem 1.5rem', borderRight: '1px solid #F1F1F1' }}>
+            <aside className="dashboard-sidebar">
+                <div 
+                    className="sidebar-overlay" 
+                    onClick={() => {
+                        document.querySelector('.dashboard-sidebar').classList.remove('active');
+                        document.querySelector('.sidebar-overlay').classList.remove('active');
+                    }}
+                ></div>
                 <div style={{ padding: '0 1rem 3.5rem' }}>
                     <h2 style={{ fontSize: '1.6rem', color: '#000', fontWeight: '950', letterSpacing: '-1.5px' }}>StyleGen</h2>
                     <p style={{ fontSize: '10px', color: '#FF4D1C', fontWeight: '900', letterSpacing: '1.5px', marginTop: '5px' }}>USER ACCOUNT</p>
@@ -279,18 +272,40 @@ const UserDashboard = () => {
             </aside>
 
             {/* MAIN CONTENT */}
-            <main className="dashboard-main" style={{ flex: 1, padding: '4rem 5rem' }}>
+            <main className="dashboard-main" style={{ padding: '4rem 5rem' }}>
                 <header className="dashboard-header" style={{ marginBottom: '3.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <div>
-                        <h1 style={{ fontSize: '2.5rem', fontWeight: '950', letterSpacing: '-1.5px', color: '#111', marginBottom: '10px' }}>
-                            {activeTab === 'dashboard' ? `Welcome back, ${user?.name || 'Artisan'}` :
-                                activeTab === 'order-history' ? 'Order History' :
-                                    activeTab === 'invoices' ? 'Your Invoices' :
-                                        activeTab === 'my-cart' ? 'My Shopping Cart' :
-                                            activeTab === 'my-wishlist' ? 'My Wishlist' :
-                                                activeTab === 'profile-settings' ? 'Account Settings' : 'Track Order'}
-                        </h1>
-                        <p style={{ color: '#666', fontSize: '1.1rem' }}>Manage your artisanal lifestyle and track your luxury purchases.</p>
+                    <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+                        <button 
+                            className="nav-hamburger" 
+                            onClick={() => {
+                                document.querySelector('.dashboard-sidebar').classList.toggle('active');
+                                document.querySelector('.sidebar-overlay').classList.toggle('active');
+                            }}
+                            style={{ 
+                                display: 'none', 
+                                flexDirection: 'column', 
+                                gap: '4px', 
+                                background: 'none', 
+                                border: 'none', 
+                                cursor: 'pointer',
+                                padding: '5px'
+                            }}
+                        >
+                            <span style={{ width: '20px', height: '2px', background: '#111' }}></span>
+                            <span style={{ width: '20px', height: '2px', background: '#111' }}></span>
+                            <span style={{ width: '20px', height: '2px', background: '#111' }}></span>
+                        </button>
+                        <div>
+                            <h1 style={{ fontSize: '2.5rem', fontWeight: '950', letterSpacing: '-1.5px', color: '#111', marginBottom: '10px' }}>
+                                {activeTab === 'dashboard' ? `Welcome back, ${user?.name || 'Artisan'}` :
+                                    activeTab === 'order-history' ? 'Order History' :
+                                        activeTab === 'invoices' ? 'Your Invoices' :
+                                            activeTab === 'my-cart' ? 'My Shopping Cart' :
+                                                activeTab === 'my-wishlist' ? 'My Wishlist' :
+                                                    activeTab === 'profile-settings' ? 'Account Settings' : 'Track Order'}
+                            </h1>
+                            <p style={{ color: '#666', fontSize: '1.1rem' }}>Manage your artisanal lifestyle and track your luxury purchases.</p>
+                        </div>
                     </div>
                     <div style={{ position: 'relative' }}>
                         <button 

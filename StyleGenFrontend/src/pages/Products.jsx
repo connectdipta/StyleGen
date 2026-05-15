@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import api, { API_URL } from '../api/api';
 import { Link } from 'react-router-dom';
-import { Filter, ChevronDown, Heart, ShoppingCart } from 'lucide-react';
+import { Filter, ChevronDown, Heart } from 'lucide-react';
 import { getImageUrl } from '../utils/imageUtils';
 import { useCart } from '../context/CartContext';
 
@@ -27,12 +27,8 @@ const Products = () => {
     const searchParam = queryParams.get('search');
 
     useEffect(() => {
-        if (searchParam) {
-            setSearchQuery(searchParam);
-        } else if (!location.search.includes('search=')) {
-            setSearchQuery('');
-        }
-    }, [searchParam, location.search]);
+        setSearchQuery(searchParam || '');
+    }, [searchParam]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -299,7 +295,7 @@ const Products = () => {
                                             color: currentPage === i + 1 ? '#FFF' : '#000', 
                                             fontWeight: '800', 
                                             cursor: 'pointer', 
-                                            border: '1px solid #EEE',
+                                            border: currentPage === i + 1 ? 'none' : '1px solid #EEE',
                                             fontSize: '14px'
                                         }}
                                     >

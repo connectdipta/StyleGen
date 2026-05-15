@@ -38,12 +38,15 @@ export const AuthProvider = ({ children }) => {
             const idToken = await firebaseResult.user.getIdToken();
 
             const { data } = await api.post('/auth/firebase', { idToken });
+            console.log('Backend Auth Success:', data);
+            
             localStorage.setItem('token', data.token);
             localStorage.setItem('user', JSON.stringify(data.user));
             setUser(data.user);
             return { success: true, user: data.user };
         } catch (error) {
-            return { success: false, message: error.response?.data?.message || 'Google login failed' };
+            console.error('Google Login Error Details:', error);
+            return { success: false, message: error.response?.data?.message || error.message || 'Google login failed' };
         }
     };
 

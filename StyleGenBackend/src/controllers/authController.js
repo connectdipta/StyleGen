@@ -80,6 +80,8 @@ export const googleLogin = async (req, res) => {
     }
 
     const projectId = process.env.FIREBASE_PROJECT_ID || "trendgen-aeb96";
+    console.log("Firebase Login Attempt - Project ID:", projectId);
+
     const jwks = createRemoteJWKSet(
       new URL("https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com"),
     );
@@ -115,6 +117,7 @@ export const googleLogin = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error("Firebase Auth Error:", error.message);
     res.status(401).json({ message: error.message || "Firebase login failed" });
   }
 };

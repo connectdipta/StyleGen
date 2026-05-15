@@ -29,18 +29,19 @@ const AdminDashboard = () => {
     ];
 
     return (
-        <div className="dashboard-container" style={{ minHeight: '100vh', background: '#F9FAFB' }}>
+        <div className="dashboard-container">
             <AdminSidebar />
-            <AdminHeader title="Dashboard Overview" />
+            <div style={{ flex: 1, minWidth: 0 }}>
+                <AdminHeader title="Dashboard Overview" />
 
-            <main style={{ marginLeft: '260px', padding: '2rem 3rem' }}>
+                <main className="dashboard-main">
                 <div style={{ marginBottom: '2.5rem' }}>
                     <h1 style={{ fontSize: '1.8rem', fontWeight: '900', color: '#111' }}>Dashboard Overview</h1>
                     <p style={{ color: '#666', marginTop: '5px' }}>Welcome back! Here's what's happening with your store today.</p>
                 </div>
 
                 {/* Stats Grid */}
-                <div className="dashboard-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem', marginBottom: '3rem' }}>
+                <div className="dashboard-stats-grid">
                     {stats.map((stat) => (
                         <div key={stat.label} style={{ background: '#FFF', padding: '1.5rem', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', border: '1px solid #EEE' }}>
                             <p style={{ fontSize: '14px', color: '#666', fontWeight: '600', marginBottom: '8px' }}>{stat.label}</p>
@@ -99,6 +100,7 @@ const AdminDashboard = () => {
                     </table>
                 </div>
             </main>
+            </div>
         </div>
     );
 };

@@ -65,19 +65,40 @@ const AdminHeader = ({ title }) => {
             padding: '0 3rem',
             position: 'sticky',
             top: 0,
-            zIndex: 100,
-            width: 'calc(100% - 260px)',
-            marginLeft: '260px'
+            zIndex: 100
         }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                <button 
+                    className="nav-hamburger" 
+                    onClick={() => {
+                        document.querySelector('.dashboard-sidebar').classList.toggle('active');
+                        document.querySelector('.sidebar-overlay').classList.toggle('active');
+                    }}
+                    style={{ 
+                        display: 'none', 
+                        flexDirection: 'column', 
+                        gap: '4px', 
+                        background: 'none', 
+                        border: 'none', 
+                        cursor: 'pointer',
+                        padding: '5px'
+                    }}
+                >
+                    <span style={{ width: '20px', height: '2px', background: '#111' }}></span>
+                    <span style={{ width: '20px', height: '2px', background: '#111' }}></span>
+                    <span style={{ width: '20px', height: '2px', background: '#111' }}></span>
+                </button>
                 <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <div style={{ width: '24px', height: '24px', background: 'var(--primary)', borderRadius: '2px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <span style={{ color: 'white', fontWeight: '900', fontSize: '14px' }}>S</span>
                     </div>
-                    <span style={{ color: '#111', fontWeight: '900', fontSize: '18px', letterSpacing: '-1px' }}>StyleGen <span style={{ color: '#666', fontWeight: '400', fontSize: '14px', marginLeft: '5px' }}>Admin Portal</span></span>
+                    <span style={{ color: '#111', fontWeight: '900', fontSize: '18px', letterSpacing: '-1px', display: 'flex', alignItems: 'center' }}>
+                        StyleGen 
+                        <span className="hide-tablet" style={{ color: '#666', fontWeight: '400', fontSize: '12px', marginLeft: '5px' }}>Admin Portal</span>
+                    </span>
                 </Link>
-                <div style={{ width: '1px', height: '20px', background: '#EEE', margin: '0 10px' }}></div>
-                <h2 style={{ fontSize: '15px', fontWeight: '800', color: '#111', textTransform: 'uppercase', letterSpacing: '1px' }}>{title || 'Dashboard'}</h2>
+                <div className="hide-tablet" style={{ width: '1px', height: '20px', background: '#EEE', margin: '0 10px' }}></div>
+                <h2 className="hide-tablet" style={{ fontSize: '14px', fontWeight: '800', color: '#111', textTransform: 'uppercase', letterSpacing: '1px' }}>{title || 'Dashboard'}</h2>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '25px' }}>
@@ -133,6 +154,13 @@ const AdminHeader = ({ title }) => {
                     </div>
                 </div>
             </div>
+            <div 
+                className="sidebar-overlay" 
+                onClick={() => {
+                    document.querySelector('.dashboard-sidebar').classList.remove('active');
+                    document.querySelector('.sidebar-overlay').classList.remove('active');
+                }}
+            ></div>
         </header>
     );
 };

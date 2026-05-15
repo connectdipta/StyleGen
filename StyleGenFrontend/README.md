@@ -1,306 +1,88 @@
-## 1. Project Overview
+# StyleGen Frontend - Luxury E-Commerce UI
 
-**Project Name:** StyleGen
+[![Live Demo](https://img.shields.io/badge/Live-Demo-FF4D1C?style=for-the-badge&logo=vercel)](https://style-gen-phi.vercel.app)
 
-**Type:** Full-stack eCommerce Platform (Leather Goods)
-
-**Tech Stack:** MERN (MongoDB, Express.js, React.js / Next.js, Node.js)
-
-### Objective
-
-A premium leather product eCommerce platform with:
-
-- Customer-facing store
-- Secure authentication system
-- Admin dashboard (inventory, orders)
-- User dashboard (orders, profile,)
-
-## 2. User Roles
-
-### 2.1 Guest User
-
-- Browse products
-- View product details
-- Search & filter
-- Cannot purchase
-
-### 2.2 Customer (Authenticated User)
-
-- Add to cart & checkout
-- Manage profile & addresses
-
-### 2.3 Admin (Artisan Manager)
-
-- Manage products, categories
-- Manage orders
-- Manage customers
-
-## 3. Functional Requirements
+The frontend for StyleGen is a high-performance, mobile-responsive React application built with **Vite 8**. It is designed with a "Luxury Leather" aesthetic, focusing on clean typography, smooth transitions, and a premium user experience.
 
 ---
 
-## 3.1 Home Page
+## ✨ Features
 
-### Features:
+### 🛒 Shopping Experience
+- **Interactive Home Page**: Dynamic hero banners and curated category showcases.
+- **Advanced Product Filtering**: Instantly filter artisanal goods by category and search terms.
+- **Product Details**: High-resolution image galleries with multi-image support and zoom capabilities.
+- **Persistent Cart**: Global state management for the shopping bag and wishlist.
 
-- Hero banner (promo leather items)
-- Categories section (Shoes, Wallet, Belt, Bags, T-Shirts)
-- Featured products
-- Discounts (Save %)
-
-### Functionalities:
-
-- Product listing (API)
-- Category filtering
-- Responsive UI
-
-## 3.2  Authentication System
-
-### Pages:
-
-- Login
-- Register
-
-### Features:
-
-- JWT Authentication
-- Role-based access (Admin/User)
-- Password encryption (bcrypt)
-
-## 3.3 Product Module
-
-### Product List Page:
-
-- Grid/List view
-- Filters:
-    - Category
-    - Price
-    - Stock
-
-### Product Details Page:
-
-- Image gallery
-- Size selection
-- Quantity selector
-- Add to cart / Buy now
-
-
-## 3.4 Cart & Checkout
-
-### Features:
-
-- Add/remove items
-- Update quantity
-- Price calculation
-- Checkout:
-    - Shipping address
-- Order confirmation
-
-## 3.5 User Dashboard
-
-### Sections:
-
-### Order History
-
-- View past orders
-- Status (Delivered, Pending, Cancelled)
-
-### Profile Settings
-
-- Personal info update
-- Password change
-- Address management
-
-
-## 3.6 Admin Dashboard
+### 🔐 User & Admin Dashboards
+- **Centralized Responsive Layout**: A custom CSS-based system (`index.css`) ensures dashboards are perfectly usable on tablets and mobile devices.
+- **Admin Management**: Full-featured tables for orders, customers, products, and categories.
+- **Real-time Updates**: Instant UI feedback via `react-toastify` and `sweetalert2` for all administrative actions.
+- **Secure Authentication**: Integration with Firebase for Google and Email login.
 
 ---
 
-### Overview
+## 🛠️ Technology Stack
 
-- Total products
-- Active inventory
-- Low stock alert
-- New submissions
-
----
-
-### Products Management
-
-- Create / Update / Delete product
-- Upload images
-- Manage stock
-- Category assign
-
-
-### Categories Management
-
-- Create category
-- Edit category
-- Assign products
+- **Core Framework**: React 18
+- **Build Engine**: Vite 8.0.13 (ESBuild for CSS minification)
+- **Icons & Visuals**: Lucide React
+- **Notifications**: React-Toastify & SweetAlert2
+- **Network Layer**: Axios with custom interceptors
+- **Styling**: Vanilla CSS (Premium Custom Design System)
 
 ---
 
-### Orders Management
+## 📂 Architecture
 
-- View all orders
-- Update status:
-    - Pending
-    - Shipped
-    - Delivered
+```text
+src/
+├── api/             # API services and Axios configuration
+├── assets/          # Static images and local resources
+├── components/      # UI components (AdminHeader, Sidebar, Navbar)
+├── pages/           # High-level views (AdminDashboard, Products, Login)
+├── utils/           # Image processing and formatting helpers
+└── index.css        # The main design system and responsive grid
+```
 
 ---
 
-### Customers Management
+## 🚦 Getting Started
 
-- View customers
-- Active / Inactive / Banned
-- Order volume tracking
+### 1. Prerequisites
+Ensure you have **Node.js v18+** installed.
 
-
-## 4. Database Design (MongoDB)
-
-### Collections:
-
-### Users
-
-```
-{
-name,
-email,
-password,
-role:"user"|"admin",
-addresses: [],
-createdAt
-}
+### 2. Installation
+```bash
+npm install
 ```
 
-### Products
-
-```
-{
-name,
-price,
-discount,
-category,
-stock,
-images: [],
-sizes: [],
-description
-}
-
-name:
-price:
-discountPrice:
-images:
-description:
-stock:
+### 3. Environment Variables
+Create a `.env` file in the root of this folder:
+```env
+VITE_API_URL=https://style-gen-backend.vercel.app/api
+VITE_FIREBASE_API_KEY=your_key
+VITE_FIREBASE_AUTH_DOMAIN=your_domain
+VITE_FIREBASE_PROJECT_ID=your_id
+VITE_IMGBB_API_KEY=your_imgbb_key
 ```
 
-### Orders
-
+### 4. Running Locally
+```bash
+npm run dev
 ```
-{
-userId,
-items: [{ productId, quantity, size }],
-totalPrice,
-status,
-shippingAddress,
-createdAt
-}
-```
-
-### Categories
-
-```
-{
-name,
-description,
-image
-}
-```
-
-## 5.  API Structure
-
-### Auth
-
-- POST /api/auth/register
-- POST /api/auth/login
-
-### Products
-
-- GET /api/products
-- GET /api/products/:id
-- POST /api/products (admin)
-
-### Orders
-
-- POST /api/orders
-
-- GET /api/orders/user
-- GET /api/orders (admin)
-
-### Users
-
-- GET /api/users
-- PUT /api/users/profile
-
-## 6. Security Requirements
-
-- JWT authentication
-- Password hashing (bcrypt)
-- Role-based authorization
-- Rate limiting
 
 ---
 
-## 7. Non-Functional Requirements
+## 📱 Responsive Utility System
 
-### Performance
-
-- Lazy loading images
-
-### Responsiveness
-
-- Mobile-first UI
-
-## 8. UI/UX Requirements
-
-- Clean luxury leather theme
-- Orange accent colour (#FF5A1F type)
-- Smooth hover effects
-- Consistent spacing & typography
+The project uses a set of specialized CSS classes for layout control:
+- `.dashboard-sidebar`: Fixed sidebar that toggles to a mobile menu on small screens.
+- `.dashboard-main`: Main content area that automatically adjusts margins.
+- `.hide-tablet`: Hides secondary elements on medium screens to prevent clumping.
+- `.hide-mobile`: Hides non-essential elements on phones for a cleaner UI.
 
 ---
 
----
-
-## 10. Suggested Folder Structure (MERN)
-
-### Backend
-
-```
-/src
-  /controllers
-  /models
-  /routes
-  /middlewares
-  /utils
-```
-
-### Frontend (Next.js)
-
-```
-/app
-/components
-/hooks
-/services (API)
-/store (Redux/Zustand)
-```
-
-```jsx
-https://www.npmjs.com/package/jsonwebtoken
-https://www.npmjs.com/package/cors
-https://www.npmjs.com/package/bcrypt
-
-```
+## 📄 License
+All rights reserved. Developed for StyleGen.

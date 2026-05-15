@@ -1,7 +1,7 @@
 import { useCart } from '../context/CartContext';
 import { getImageUrl } from '../utils/imageUtils';
 import { API_URL } from '../api/api';
-import { Trash2, ShoppingCart, ArrowRight } from 'lucide-react';
+import { Trash2, ShoppingCart, ArrowRight, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Wishlist = () => {

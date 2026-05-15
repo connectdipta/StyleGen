@@ -1,13 +1,23 @@
+import { useState, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { CheckCircle, ShoppingBag, ArrowRight, Package, Calendar } from 'lucide-react';
 
 const OrderSuccess = () => {
     const location = useLocation();
-    const orderId = location.state?.orderId || `SG-${Math.floor(100000 + Math.random() * 900000)}`;
-    const displayId = typeof orderId === 'string' && orderId.length > 8 ? orderId.substring(0, 8).toUpperCase() : orderId;
     
-    const deliveryDate = new Date();
-    deliveryDate.setDate(deliveryDate.getDate() + 3);
+    const orderId = useMemo(() => {
+        return location.state?.orderId || `SG-${Math.floor(100000 + Math.random() * 900000)}`;
+    }, [location.state?.orderId]);
+
+    const displayId = useMemo(() => {
+        return typeof orderId === 'string' && orderId.length > 8 ? orderId.substring(0, 8).toUpperCase() : orderId;
+    }, [orderId]);
+    
+    const deliveryDate = useMemo(() => {
+        const date = new Date();
+        date.setDate(date.getDate() + 3);
+        return date;
+    }, []);
 
     return (
         <div style={{ minHeight: '90vh', background: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '5rem 0' }}>

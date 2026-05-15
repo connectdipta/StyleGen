@@ -54,7 +54,7 @@ const Register = () => {
                         <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: '700', color: '#555' }}>Full Name</label>
                         <input
                             type="text"
-                            placeholder="John Doe"
+                            placeholder="Your Name"
                             required
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -66,7 +66,7 @@ const Register = () => {
                         <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: '700', color: '#555' }}>Email Address</label>
                         <input
                             type="email"
-                            placeholder="name@company.com"
+                            placeholder="name@gmail.com"
                             required
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}

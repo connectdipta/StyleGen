@@ -21,7 +21,7 @@ const AdminSidebar = () => {
     ];
 
     return (
-        <div className="dashboard-sidebar" style={{ width: '260px', height: '100vh', background: '#FFF', borderRight: '1px solid #EEE', padding: '2rem 1.5rem', position: 'fixed', left: 0, top: 0 }}>
+        <div className="dashboard-sidebar">
             <div style={{ marginBottom: '3rem', paddingLeft: '10px' }}>
                 <h2 style={{ color: 'var(--primary)', fontWeight: '900', fontSize: '1.5rem' }}>StyleGen</h2>
                 <p style={{ fontSize: '12px', color: '#999', fontWeight: '600' }}>ADMIN PANEL</p>

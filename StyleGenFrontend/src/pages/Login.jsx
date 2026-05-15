@@ -70,7 +70,7 @@ const Login = () => {
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="e.g. admin@stylegen.com"
+                            placeholder="e.g.EMAIL ADDRESS"
                             required
                             disabled={submitting}
                             style={{

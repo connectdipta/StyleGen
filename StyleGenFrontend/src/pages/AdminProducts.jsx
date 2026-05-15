@@ -5,6 +5,7 @@ import api, { API_URL } from '../api/api';
 import { Plus, Search, Edit, Trash2, Eye, X, Loader2, Upload, Image as ImageIcon, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getImageUrl } from '../utils/imageUtils';
 import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 
 const IMGBB_API_KEY = import.meta.env.VITE_IMGBB_API_KEY;
 
@@ -123,18 +124,16 @@ const AdminProducts = () => {
     };
 
     const handleDelete = async (id) => {
-        const result = await import('sweetalert2').then(Swal => 
-            Swal.default.fire({
-                title: 'Delete Product?',
-                text: 'This action cannot be undone',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#EF4444',
-                cancelButtonColor: '#6B7280',
-                confirmButtonText: 'Yes, delete',
-                cancelButtonText: 'Cancel',
-            })
-        );
+        const result = await Swal.fire({
+            title: 'Delete Product?',
+            text: 'This action cannot be undone',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#EF4444',
+            cancelButtonColor: '#6B7280',
+            confirmButtonText: 'Yes, delete',
+            cancelButtonText: 'Cancel',
+        });
 
         if (result.isConfirmed) {
             try {
@@ -231,11 +230,12 @@ const AdminProducts = () => {
     const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
     return (
-        <div className="dashboard-container" style={{ minHeight: '100vh', background: '#F9FAFB' }}>
+        <div className="dashboard-container">
             <AdminSidebar />
-            <AdminHeader title="Product Management" />
+            <div style={{ flex: 1, minWidth: 0 }}>
+                <AdminHeader title="Product Management" />
 
-            <main className="dashboard-main" style={{ marginLeft: '260px', padding: '2rem 3rem' }}>
+                <main className="dashboard-main">
                 <div className="dashboard-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem', background: '#FFF', padding: '2rem', borderRadius: '12px', border: '1px solid #EEE' }}>
                     <div>
                         <h1 style={{ fontSize: '1.8rem', fontWeight: '950', color: '#111', letterSpacing: '-1px' }}>Product Catalog</h1>
@@ -612,6 +612,7 @@ const AdminProducts = () => {
                     </div>
                 )}
             </main>
+            </div>
         </div>
     );
 };

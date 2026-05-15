@@ -167,10 +167,11 @@ const AdminCategories = () => {
     };
 
     return (
-        <div className="dashboard-container" style={{ minHeight: '100vh', background: '#FBFBFC' }}>
+        <div className="dashboard-container">
             <AdminSidebar />
-            <AdminHeader title="Category Management" />
-            <main className="dashboard-main" style={{ marginLeft: '260px', padding: '3rem' }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+                <AdminHeader title="Category Management" />
+                <main className="dashboard-main">
                 <div className="dashboard-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
                     <div>
                         <h1 style={{ fontSize: '2.2rem', fontWeight: '950', color: '#111', letterSpacing: '-1.5px' }}>Product Categories</h1>
@@ -389,6 +390,7 @@ const AdminCategories = () => {
                     </div>
                 </div>
             )}
+            </div>
         </div>
     );
 };

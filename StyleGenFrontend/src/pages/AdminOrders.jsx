@@ -45,11 +45,12 @@ const AdminOrders = () => {
     };
 
     return (
-        <div className="dashboard-container" style={{ minHeight: '100vh', background: '#F9FAFB' }}>
+        <div className="dashboard-container">
             <AdminSidebar />
-            <AdminHeader title="Order Management" />
+            <div style={{ flex: 1, minWidth: 0 }}>
+                <AdminHeader title="Order Management" />
 
-            <main className="dashboard-main" style={{ marginLeft: '260px', padding: '2rem 3rem' }}>
+                <main className="dashboard-main">
                 <header className="dashboard-header" style={{ marginBottom: '2.5rem' }}>
                     <h1 style={{ fontSize: '1.8rem', fontWeight: '900', color: '#111' }}>Orders Management</h1>
                     <p style={{ color: '#666', marginTop: '5px' }}>Track and manage your customer orders.</p>
@@ -132,6 +133,7 @@ const AdminOrders = () => {
                     </table>
                 </div>
             </main>
+            </div>
         </div>
     );
 };

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Loader2 } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const GoogleSignInButton = () => {
   const { loginWithGoogle } = useAuth();
@@ -10,9 +11,14 @@ const GoogleSignInButton = () => {
     setLoading(true);
     try {
       const result = await loginWithGoogle();
-      if (!result.success) {
+      if (result.success) {
+        toast.success('Signed in with Google successfully!');
+      } else {
+        toast.error(result.message || 'Google login failed');
         console.error(result.message);
       }
+    } catch (error) {
+        toast.error('An unexpected error occurred during Google Sign In');
     } finally {
       setLoading(false);
     }
