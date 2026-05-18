@@ -249,6 +249,165 @@ a {
   color: #ff4d1c;
 }
 
+.footer {
+  background: #fff;
+  border-top: 1px solid #eee;
+  padding: 5rem 0 2rem;
+}
+
+.footer__grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr 0.8fr 1.2fr;
+  gap: 3rem;
+  margin-bottom: 4rem;
+}
+
+.footer__brand-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.footer__brand-mark {
+  width: 25px;
+  height: 25px;
+  background: #ff4d1c;
+  border-radius: 2px;
+}
+
+.footer__brand-name {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #000;
+  letter-spacing: -1px;
+}
+
+.footer__description {
+  color: #666;
+  font-size: 13px;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+}
+
+.footer__icon-row {
+  display: flex;
+  gap: 15px;
+}
+
+.footer__section-title {
+  font-size: 13px;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+.footer__links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer__link {
+  color: #666;
+  font-size: 13px;
+}
+
+.footer__newsletter-text {
+  color: #666;
+  font-size: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.footer__newsletter {
+  display: flex;
+}
+
+.footer__input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #eee;
+  outline: none;
+  font-size: 13px;
+}
+
+.footer__button {
+  background: #000;
+  color: #fff;
+  padding: 0 20px;
+  border: none;
+  font-weight: 900;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.footer__bottom {
+  border-top: 1px solid #eee;
+  padding-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.footer__copyright {
+  color: #999;
+  font-size: 12px;
+}
+
+.footer__payments {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.footer__payment-icon {
+  height: 20px;
+  filter: grayscale(1);
+}
+
+@media (max-width: 1024px) {
+  .footer {
+    padding: 4rem 0 2rem;
+  }
+
+  .footer__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .footer {
+    padding: 3rem 0 1.5rem;
+  }
+
+  .footer__grid {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .footer__newsletter {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .footer__button {
+    min-height: 42px;
+  }
+
+  .footer__bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .footer__payments {
+    flex-wrap: wrap;
+  }
+}
+
 .auth-page {
   height: 100vh;
   display: grid;
